@@ -21,8 +21,6 @@ public class TwitterOAuth {
         public TwitterRequestToken() {
             super(TESTAPP_OAUTH_CONSUMERKEY, TESTAPP_OAUTH_CONSUMERSECRET, TWITTER_REQUEST_TOKEN_PATH);
         }
-
-        
         
     }
     
