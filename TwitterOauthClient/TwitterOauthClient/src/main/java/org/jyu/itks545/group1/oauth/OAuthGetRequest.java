@@ -19,6 +19,7 @@ import twitter4j.internal.http.BASE64Encoder;
 
 /**
  * Baseclass for HTTP-requests for OAuth-process
+ *
  * @author Bela Borbely <bela.z.borbely at gmail.com>
  * @version 14.2.2013
  */
@@ -39,17 +40,19 @@ public class OAuthGetRequest {
     private final String consumerSecret;
     private final String httpUrl;
     private HttpGet httpGet;
-    private String response;
+    private String responseString;
     private Map<String, String> parameters = new LinkedHashMap<String, String>();
+    private Map<String, String> responseMap = new LinkedHashMap<String, String>();
     private HttpClient httpClient = new DefaultHttpClient();
     private ResponseHandler<String> responseHandler = new BasicResponseHandler();
     private Random random = new Random();
 
     /**
-     * Constructor -  consumer key / secret and url
+     * Constructor - consumer key / secret and url
+     *
      * @param consumerKey
      * @param consumerSecret
-     * @param httpUrl 
+     * @param httpUrl
      */
     public OAuthGetRequest(String consumerKey, String consumerSecret, String httpUrl) {
         this.consumerKey = consumerKey;
@@ -58,8 +61,9 @@ public class OAuthGetRequest {
     }
 
     /**
-     * Fill the parameter map. Generate signature, nonce, etc 
-     * @throws Exception 
+     * Fill the parameter map. Generate signature, nonce, etc
+     *
+     * @throws Exception
      */
     private void collectParameters() throws Exception {
         parameters.put(ParameterKey.oauth_consumer_key.toString(), consumerKey);
@@ -72,9 +76,10 @@ public class OAuthGetRequest {
 
     /**
      * URL-encode inputtext
+     *
      * @param input
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private String encode(String input) throws Exception {
         return URLEncoder.encode(input, "UTF-8");
@@ -82,8 +87,9 @@ public class OAuthGetRequest {
 
     /**
      * Sign basestring with customersecret
+     *
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private String signature() throws Exception {
         Mac mac = Mac.getInstance("HmacSHA1");
@@ -97,8 +103,9 @@ public class OAuthGetRequest {
 
     /**
      * Input for signing
+     *
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     private String baseString() throws Exception {
         List<String> params = new LinkedList<String>(parameters.keySet());
@@ -124,7 +131,8 @@ public class OAuthGetRequest {
 
     /**
      * Some random nonsence
-     * @return 
+     *
+     * @return
      */
     private String nonce() {
         return "" + System.currentTimeMillis() + random.nextInt();
@@ -132,7 +140,8 @@ public class OAuthGetRequest {
 
     /**
      * Timestamp in seconds
-     * @return 
+     *
+     * @return
      */
     private String timestamp() {
         return "" + System.currentTimeMillis() / 1000;
@@ -140,7 +149,8 @@ public class OAuthGetRequest {
 
     /**
      * Create the requested HTTP GET request url
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     private void buildRequestUrl() throws Exception {
         StringBuilder queryString = new StringBuilder(httpUrl);
@@ -156,21 +166,37 @@ public class OAuthGetRequest {
 
     /**
      * Send request and store the response string
-     * @throws Exception 
+     *
+     * @throws Exception
      */
     public void sendRequest() throws Exception {
         collectParameters();
         buildRequestUrl();
         debug("Request URL: " + httpGet.getRequestLine().getUri());
-        response = httpClient.execute(httpGet, responseHandler);
+        responseString = httpClient.execute(httpGet, responseHandler);
+        buildResponseMap();
+        debug("oauth_token: " + responseMap.get("oauth_token"));
+
+    }
+
+    private void buildResponseMap() {
+        String[] keyValuePairs = responseString == null ? new String[0] : responseString.split("&");
+        for (int i = 0; i < keyValuePairs.length; i++) {
+            String keyValuePair = keyValuePairs[i];
+            String[] temp = keyValuePair.split("=");
+            if (temp != null && temp.length == 2) {
+                responseMap.put(temp[0], temp[1]);
+            }
+        }
     }
 
     /**
      * Response
-     * @return 
+     *
+     * @return
      */
-    public String getResponse() {
-        return response;
+    public String getResponseString() {
+        return responseString;
     }
 
     public static void debug(String message) {
@@ -179,5 +205,9 @@ public class OAuthGetRequest {
 
     public static void error(Exception ex) {
         Logger.getLogger(OAuthGetRequest.class).error(ex.getMessage(), ex);
+    }
+
+    public String getResponseString(String key) {
+        return responseMap.get(key);
     }
 }

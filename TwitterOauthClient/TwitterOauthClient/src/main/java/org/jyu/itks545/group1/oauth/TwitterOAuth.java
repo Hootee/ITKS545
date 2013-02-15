@@ -1,5 +1,9 @@
 package org.jyu.itks545.group1.oauth;
 
+import java.awt.Desktop;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  *
  * @author Bela Borbely <bela.z.borbely at gmail.com>
@@ -16,6 +20,22 @@ public class TwitterOAuth {
 
         public TwitterRequestToken() {
             super(TESTAPP_OAUTH_CONSUMERKEY, TESTAPP_OAUTH_CONSUMERSECRET, TWITTER_REQUEST_TOKEN_PATH);
+        }
+
+        
+        
+    }
+    
+    public static class TwitterAuthorize{
+
+        private final TwitterRequestToken requestToken;
+
+        public TwitterAuthorize(TwitterRequestToken requestToken) {
+            this.requestToken = requestToken;
+        }
+        
+        public void openBrowser() throws Exception{
+            Desktop.getDesktop().browse(new URL(TWITTER_AUTHORIZE_PATH + "?oauth_token=" + requestToken.getResponseString("oauth_token")).toURI());
         }
         
     }
