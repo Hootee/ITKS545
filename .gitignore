@@ -19,3 +19,7 @@ local.properties
 .classpath
 .project
 /TwitterOauthClient/TwitterOauthClient/target/
+/OauthUtils/TwitterOauthClient/target/
+/OAuthUtils/target/
+/AndroidClient/target/
+/TwitterDesktopOAuthClient/target/
