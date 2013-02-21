@@ -76,19 +76,32 @@ public class OAuthGetRequest {
         parameters.put(ParameterKey.oauth_timestamp.toString(), timestamp());
         parameters.put(ParameterKey.oauth_signature.toString(), signature());
     }
-    
-    protected void putValue(ParameterKey param, String value){
+
+    /**
+     * Put value to the parameter map
+     * @param param
+     * @param value 
+     */
+    protected void putValue(ParameterKey param, String value) {
         parameters.put(param.toString(), value);
     }
 
-    public String response_oauth_token(){
+    /**
+     * Parsed value from reponse: oauth_token
+     * @return 
+     */
+    public String response_oauth_token() {
         return getResponseString("oauth_token");
     }
-    
-    protected String response_oauth_token_secret(){
+
+    /**
+     * Parsed value from reponse: oauth_token_secret
+     * @return 
+     */
+    protected String response_oauth_token_secret() {
         return getResponseString("oauth_token_secret");
     }
-    
+
     /**
      * URL-encode inputtext
      *
@@ -101,16 +114,16 @@ public class OAuthGetRequest {
     }
 
     /**
-     * Sign basestring with customersecret
+     * Sign basestring with customersecret (and oauth_token_secret if we have)
      *
      * @return
      * @throws Exception
      */
     private String signature() throws Exception {
         Mac mac = Mac.getInstance("HmacSHA1");
-        // Some secret about secret: consumerSecret + "&"
-        String oauth_token_secret = parameters.get("oauth_token_secret");
-        SecretKeySpec secretKey = new SecretKeySpec((consumerSecret + "&" + (oauth_token_secret==null?"":oauth_token_secret)).getBytes("UTF-8"), mac.getAlgorithm());
+        String oauth_token_secret = response_oauth_token_secret();
+        String key = consumerSecret + "&" + (oauth_token_secret == null ? "" : oauth_token_secret);
+        SecretKeySpec secretKey = new SecretKeySpec(key.getBytes("UTF-8"), mac.getAlgorithm());
         mac.init(secretKey);
         byte[] digest = mac.doFinal(baseString().getBytes("UTF-8"));
         String signature = Base64.encodeBase64String(digest);
@@ -191,7 +204,7 @@ public class OAuthGetRequest {
         debug("Request URL: " + httpGet.getRequestLine().getUri());
         responseString = httpClient.execute(httpGet, responseHandler);
         buildResponseMap();
-        debug("oauth_token: " + responseMap.get("oauth_token"));
+        debug("Response: " + responseString);
 
     }
 
