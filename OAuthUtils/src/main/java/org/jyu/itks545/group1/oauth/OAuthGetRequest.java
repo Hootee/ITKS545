@@ -109,8 +109,9 @@ public class OAuthGetRequest {
     private String signature() throws Exception {
         Mac mac = Mac.getInstance("HmacSHA1");
         // Some secret about secret: consumerSecret + "&"
-        SecretKeySpec secret = new SecretKeySpec((consumerSecret + "&").getBytes("UTF-8"), mac.getAlgorithm());
-        mac.init(secret);
+        String oauth_token_secret = parameters.get("oauth_token_secret");
+        SecretKeySpec secretKey = new SecretKeySpec((consumerSecret + "&" + (oauth_token_secret==null?"":oauth_token_secret)).getBytes("UTF-8"), mac.getAlgorithm());
+        mac.init(secretKey);
         byte[] digest = mac.doFinal(baseString().getBytes("UTF-8"));
         String signature = Base64.encodeBase64String(digest);
         return signature;
