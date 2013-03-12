@@ -10,7 +10,8 @@
         <module>AndroidClient</module>
         <module>OAuthUtils</module>
         <module>TwitterDesktopOAuthClient</module>
-    </modules>
+    <module>GooglePlayService</module>
+  </modules>
     <build>
         <plugins>
             <plugin>

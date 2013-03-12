@@ -33,5 +33,14 @@
                 <goal>-Dandroid.device=emulator</goal>
             </goals>
         </action>
+        <action>
+            <actionName>rebuild</actionName>
+            <goals>
+                <goal>clean</goal>
+                <goal>install</goal>
+                <goal>-e</goal>
+                <goal>-X</goal>
+            </goals>
+        </action>
         
     </actions>

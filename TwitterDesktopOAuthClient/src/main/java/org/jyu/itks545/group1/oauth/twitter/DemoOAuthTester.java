@@ -19,11 +19,13 @@ public class DemoOAuthTester extends javax.swing.JFrame {
     private DemoOAuth.RequestToken requestToken;
     private DemoOAuth.Authorize authorizer;
     private DemoOAuth.AccessToken accessToken;
+    private DemoOAuth.AuthorizedRequest authorizedRequest;
 
     public DemoOAuthTester() {
         initComponents();
         jButtonGetRequestToken.setAction(getRequestTokenAction());
         jButtonGetAccessToken.setAction(getAccessTokenAction());
+        jButtonAddMessage.setAction(getAddMessageAction());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -38,11 +40,15 @@ public class DemoOAuthTester extends javax.swing.JFrame {
         jButtonGetAccessToken = new javax.swing.JButton();
         jPanelAccessToken = new javax.swing.JPanel();
         jLabelAccessToken = new javax.swing.JLabel();
+        jPanelAuthorizedRequest = new javax.swing.JPanel();
+        jTextFieldAddMessage = new javax.swing.JTextField();
+        jButtonAddMessage = new javax.swing.JButton();
+        jLabelAuthoreizedRequestResult = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Desktop Twitter OAuth Tester");
         setMinimumSize(new java.awt.Dimension(800, 250));
-        getContentPane().setLayout(new java.awt.GridLayout(3, 1));
+        getContentPane().setLayout(new java.awt.GridLayout(4, 1));
 
         jPanelRequestToken.setBorder(javax.swing.BorderFactory.createTitledBorder("request_token"));
         jPanelRequestToken.setMinimumSize(new java.awt.Dimension(550, 80));
@@ -83,6 +89,20 @@ public class DemoOAuthTester extends javax.swing.JFrame {
 
         getContentPane().add(jPanelAccessToken);
 
+        jPanelAuthorizedRequest.setBorder(javax.swing.BorderFactory.createTitledBorder("authorized request"));
+        jPanelAuthorizedRequest.setMinimumSize(new java.awt.Dimension(550, 80));
+        jPanelAuthorizedRequest.setPreferredSize(new java.awt.Dimension(550, 80));
+        jPanelAuthorizedRequest.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jTextFieldAddMessage.setPreferredSize(new java.awt.Dimension(80, 20));
+        jPanelAuthorizedRequest.add(jTextFieldAddMessage);
+
+        jButtonAddMessage.setText("Add message");
+        jPanelAuthorizedRequest.add(jButtonAddMessage);
+        jPanelAuthorizedRequest.add(jLabelAuthoreizedRequestResult);
+
+        getContentPane().add(jPanelAuthorizedRequest);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -95,14 +115,18 @@ public class DemoOAuthTester extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    protected javax.swing.JButton jButtonAddMessage;
     protected javax.swing.JButton jButtonGetAccessToken;
     protected javax.swing.JButton jButtonGetRequestToken;
     protected javax.swing.JLabel jLabelAccessToken;
     protected javax.swing.JLabel jLabelAddPIN;
+    protected javax.swing.JLabel jLabelAuthoreizedRequestResult;
     protected javax.swing.JLabel jLabelOauthToken;
     protected javax.swing.JPanel jPanelAccessToken;
     protected javax.swing.JPanel jPanelAuthorize;
+    protected javax.swing.JPanel jPanelAuthorizedRequest;
     protected javax.swing.JPanel jPanelRequestToken;
+    protected javax.swing.JTextField jTextFieldAddMessage;
     protected javax.swing.JTextField jTextFieldAddPIN;
     // End of variables declaration//GEN-END:variables
 
@@ -160,4 +184,33 @@ public class DemoOAuthTester extends javax.swing.JFrame {
         action.putValue(Action.LONG_DESCRIPTION, jButtonGetAccessToken.getText());
         return action;
     }
+    
+    /**
+     * GUI Action for getting request_token
+     *
+     * @return
+     */
+    private Action getAddMessageAction() {
+        Action action = new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String message = jTextFieldAddMessage.getText();
+                    authorizedRequest = new DemoOAuth.AuthorizedRequest(message, accessToken);
+                    
+                    authorizedRequest.sendRequest();
+                    jLabelAuthoreizedRequestResult.setText("Result: " + authorizedRequest.getResponseString());
+                    jLabelAuthoreizedRequestResult.setToolTipText("Result: " + authorizedRequest.getResponseString());
+                } catch (Exception ex) {
+                    Logger.getLogger(DemoOAuthTester.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        action.putValue(Action.NAME, jButtonAddMessage.getText());
+        action.putValue(Action.SHORT_DESCRIPTION, jButtonAddMessage.getText());
+        action.putValue(Action.LONG_DESCRIPTION, jButtonAddMessage.getText());
+        return action;
+    }
+    
+    
 }

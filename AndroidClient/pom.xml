@@ -6,31 +6,60 @@
     <artifactId>AndroidClient</artifactId>
     <version>0.1</version>
     <name>AndroidClient</name>
-    <parent>
+    <packaging>apk</packaging>
+<!--    <parent>
         <groupId>org.jyu.itks545.group1</groupId>
         <artifactId>itks545</artifactId>
         <version>0.1</version>
-    </parent>
+    </parent>-->
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>android</artifactId>
-            <version>${platform.version}</version>
+            <version>4.1.1.4</version>
             <scope>provided</scope>
-        </dependency>			
+        </dependency>
+        <!--        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>r7</version>            
+            <type>apklib</type>
+        </dependency>-->
         <dependency>
-            <groupId>org.jyu.itks545.group1</groupId>
-            <artifactId>OAuthUtils</artifactId>
-            <version>0.1</version>
-            <scope>compile</scope>
+            <groupId>com.google.android</groupId>
+            <artifactId>support-v4</artifactId>
+            <version>r7</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>4</version>
+            <type>apklib</type>
+        </dependency>-->
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>4</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>google-play-services-jar</artifactId>
+                    <groupId>com.google.android.gsm</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android.maps</groupId>
+            <artifactId>maps</artifactId>
+            <version>17_r2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android</groupId>
+            <artifactId>annotations</artifactId>
+            <version>4.1.1.4</version>
         </dependency>
     </dependencies>
 	
-    <properties>
-        <platform.version>4.0.1.2</platform.version>
-        <android.res.dir>${project.basedir}/res</android.res.dir>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -56,12 +85,12 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <androidManifestFile>${project.basedir}/manifest/AndroidManifest.xml</androidManifestFile>
+                    <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
                     <assetsDirectory>${project.basedir}/assets</assetsDirectory>
-                    <resourceDirectory>${android.res.dir}</resourceDirectory>
+                    <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
-                        <platform>14</platform>
+                        <platform>17</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
@@ -69,52 +98,4 @@
             </plugin>
         </plugins>
     </build>
-    
-    <profiles>
-        <profile>
-            <id>Emulator</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                        <artifactId>android-maven-plugin</artifactId>
-                        <version>3.5.0</version>
-                        <configuration>
-                            <androidManifestFile>${project.basedir}/manifest/AndroidManifest.xml</androidManifestFile>
-                            <assetsDirectory>${project.basedir}/assets</assetsDirectory>
-                            <resourceDirectory>${project.basedir}/res</resourceDirectory>
-                            <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
-                            <sdk>
-                                <platform>14</platform>
-                            </sdk>
-                            <undeployBeforeDeploy>true</undeployBeforeDeploy>
-                            <emulator>
-                                <avd>tablet</avd>
-                                <wait>60000</wait>
-                            </emulator>
-                        </configuration>
-                        <extensions>true</extensions>
-                        <executions>
-                            <execution>
-                                <id>startEmulator</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>emulator-start</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>2.5.1</version>
-                        <configuration>
-                            <source>1.5</source>
-                            <target>1.5</target>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

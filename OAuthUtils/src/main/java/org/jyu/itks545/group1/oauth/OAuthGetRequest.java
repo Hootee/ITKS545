@@ -98,7 +98,7 @@ public class OAuthGetRequest {
      * Parsed value from reponse: oauth_token_secret
      * @return 
      */
-    protected String response_oauth_token_secret() {
+    public String response_oauth_token_secret() {
         return getResponseString("oauth_token_secret");
     }
 
@@ -115,13 +115,13 @@ public class OAuthGetRequest {
 
     /**
      * Sign basestring with customersecret (and oauth_token_secret if we have)
-     *
+     * 
      * @return
      * @throws Exception
      */
     private String signature() throws Exception {
         Mac mac = Mac.getInstance("HmacSHA1");
-        String oauth_token_secret = response_oauth_token_secret();
+        String oauth_token_secret = parameters.get(ParameterKey.oauth_token_secret.toString());
         String key = consumerSecret + "&" + (oauth_token_secret == null ? "" : oauth_token_secret);
         SecretKeySpec secretKey = new SecretKeySpec(key.getBytes("UTF-8"), mac.getAlgorithm());
         mac.init(secretKey);
@@ -240,6 +240,7 @@ public class OAuthGetRequest {
     }
 
     public String getResponseString(String key) {
-        return responseMap.get(key);
+        String value = responseMap.get(key);
+        return value;
     }
 }
