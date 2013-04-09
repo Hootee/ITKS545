@@ -4,6 +4,7 @@ import org.jyu.itks545.R.id;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import static android.content.Context.MODE_PRIVATE;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
@@ -76,6 +77,7 @@ public class MyMapActivity extends FragmentActivity {
 //		boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         boolean gpsEnabled = true;
         boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//		boolean networkEnabled = true;
 
         // Check if enabled and if not send user to the GPS settings
         if (!gpsEnabled || !networkEnabled) {
@@ -83,6 +85,7 @@ public class MyMapActivity extends FragmentActivity {
         }
 
         mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                //		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 
                 2 * 60 * 1000, // 2 minutes
                 10, // 10 meters
                 listener);
@@ -124,11 +127,15 @@ public class MyMapActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case id.action_add_message:
-//			addMessage();
-                Intent intent = new Intent(this, WriteMessageActivity.class);
-                if (location != null) {
+                UserId userId = UserId.create(getPreferences(MODE_PRIVATE));
+                Log.d(TAG, "userID: " + 0);
+                if (userId.isRegistered()) {
+                    Intent intent = new Intent(this, WriteMessageActivity.class);
                     intent.putExtra("latitude", location.latitude);
                     intent.putExtra("longitude", location.longitude);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
                 break;
@@ -141,7 +148,6 @@ public class MyMapActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -176,27 +182,19 @@ public class MyMapActivity extends FragmentActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.ok,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent callGPSSettingIntent = new Intent(
-                                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        startActivity(callGPSSettingIntent);
-                    }
-                });
+            public void onClick(DialogInterface dialog, int id) {
+                Intent callGPSSettingIntent = new Intent(
+                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(callGPSSettingIntent);
+            }
+        });
         alertDialogBuilder.setNegativeButton(R.string.cancel,
                 new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
-//	private void addMessage() {
-//		Log.i(TAG, "addMessage");
-//		WriteMessageFrag writeMessageFrag = new WriteMessageFrag();
-//		FragmentManager fragmentManager = getSupportFragmentManager();
-//		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//		fragmentTransaction.replace(R.id.fragment_container, writeMessageFrag, "WriteMessageFrag");
-//		fragmentTransaction.commit();		
-//	}
 }

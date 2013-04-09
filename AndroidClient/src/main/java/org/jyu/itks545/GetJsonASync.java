@@ -4,65 +4,88 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
 
 class GetJsonASync extends AsyncTask<Void, Void, HttpResponse> {
-	private final AsyncCallback asyncCallback;
-	private final String url;
 
-	public GetJsonASync(AsyncCallback asyncCallback, String url) {
-		this.asyncCallback = asyncCallback;
-		this.url = url;
-	}
-	@Override
-	protected HttpResponse doInBackground(Void... params) {
-		HttpGet request = new HttpGet(url);
-//		HttpPost request = new HttpPost(url);
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-		try {
-			return client.execute(request);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			client.close();
-		}
-	}
+    private static final String TAG = GetJsonASync.class.getSimpleName();
+    private final AsyncCallback asyncCallback;
+    private final String url;
+    private final List<NameValuePair> data;
 
-	@Override
-	protected void onPostExecute(HttpResponse result) {
-		if (result != null) {
-			Log.i("Content lenght",Long.toString(result.getEntity().getContentLength()));
-			try {
-				InputStream is = result.getEntity().getContent();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-				StringBuilder sb = new StringBuilder();
-				String line = null;
+    public GetJsonASync(AsyncCallback asyncCallback, String url, List<NameValuePair> data) {
+        this.asyncCallback = asyncCallback;
+        this.url = url;
+        this.data = data;
+    }
 
-				while ((line = reader.readLine()) != null) {
-					sb.append(line);
-				}
+    @Override
+    protected HttpResponse doInBackground(Void... params) {
+        HttpPost httpPost = new HttpPost(url);
+        AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+        StringEntity tmp = null;
 
-				reader.close();
-				is.close();
+//		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-				if (asyncCallback != null) {
-					asyncCallback.callback(sb.toString());
-				}
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+        try {
+            if (data != null) {
+                tmp = new UrlEncodedFormEntity(data);
+                httpPost.setEntity(tmp);
+            }
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, "HttpUtils : UnsupportedEncodingException : " + e);
+        }
+
+
+        try {
+            return client.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            client.close();
+        }
+    }
+
+    @Override
+    protected void onPostExecute(HttpResponse result) {
+        if (result != null) {
+            Log.i("Content lenght", Long.toString(result.getEntity().getContentLength()));
+            try {
+                InputStream is = result.getEntity().getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                reader.close();
+                is.close();
+
+                Log.i("Content", sb.toString());
+                if (asyncCallback != null) {
+                    asyncCallback.callback(sb.toString());
+                }
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
 }

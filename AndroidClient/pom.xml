@@ -7,11 +7,6 @@
     <version>0.1</version>
     <name>AndroidClient</name>
     <packaging>apk</packaging>
-<!--    <parent>
-        <groupId>org.jyu.itks545.group1</groupId>
-        <artifactId>itks545</artifactId>
-        <version>0.1</version>
-    </parent>-->
     <dependencies>
         <dependency>
             <groupId>com.google.android</groupId>
@@ -19,33 +14,22 @@
             <version>4.1.1.4</version>
             <scope>provided</scope>
         </dependency>
-        <!--        <dependency>
-            <groupId>com.google.android</groupId>
-            <artifactId>support-v4</artifactId>
-            <version>r7</version>            
-            <type>apklib</type>
-        </dependency>-->
         <dependency>
             <groupId>com.google.android</groupId>
             <artifactId>support-v4</artifactId>
             <version>r7</version>
         </dependency>
-<!--        <dependency>
-            <groupId>com.google.android.gms</groupId>
-            <artifactId>google-play-services</artifactId>
-            <version>4</version>
-            <type>apklib</type>
-        </dependency>-->
         <dependency>
             <groupId>com.google.android.gms</groupId>
             <artifactId>google-play-services</artifactId>
             <version>4</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>google-play-services-jar</artifactId>
-                    <groupId>com.google.android.gsm</groupId>
-                </exclusion>
-            </exclusions>
+            <type>apklib</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.android.gms</groupId>
+            <artifactId>google-play-services</artifactId>
+            <version>4</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.android.maps</groupId>

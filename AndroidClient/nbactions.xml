@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <actions>
-        <action>
-            <actionName>run</actionName>
-            <goals>
-                <goal>android:deploy</goal>
-                <goal>android:run</goal>
-            </goals>
-        </action>
-        <action>
-            <actionName>CUSTOM-Run emulator</actionName>
-            <displayName>Run emulator</displayName>
-            <goals>
-                <goal>android:emulator-start</goal>
-            </goals>
-        </action>
-        <action>
-            <actionName>CUSTOM-Run usb</actionName>
-            <displayName>Run usb</displayName>
-            <goals>
-                <goal>android:deploy</goal>
-                <goal>android:run</goal>
-                <goal>-Dandroid.device=usb</goal>
+    <action>
+        <actionName>run</actionName>
+        <goals>
+            <goal>android:deploy</goal>
+            <goal>android:run</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-Run emulator</actionName>
+        <displayName>Run emulator</displayName>
+        <goals>
+            <goal>android:emulator-start</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-Run usb</actionName>
+        <displayName>Run usb</displayName>
+        <goals>
+            <goal>android:deploy</goal>
+            <goal>android:run</goal>
+            <goal>-Dandroid.device=usb</goal>
                 
-            </goals>
-        </action>
-        <action>
-            <actionName>CUSTOM-Run emu</actionName>
-            <displayName>Run emu</displayName>
-            <goals>
-                <goal>android:deploy</goal>
-                <goal>android:run</goal>
-                <goal>-Dandroid.device=emulator</goal>
-            </goals>
-        </action>
-        <action>
-            <actionName>rebuild</actionName>
-            <goals>
-                <goal>clean</goal>
-                <goal>install</goal>
-                <goal>-e</goal>
-                <goal>-X</goal>
-            </goals>
-        </action>
+        </goals>
+    </action>
+    <action>
+        <actionName>CUSTOM-Run emu</actionName>
+        <displayName>Run emu</displayName>
+        <goals>
+            <goal>android:deploy</goal>
+            <goal>android:run</goal>
+            <goal>-Dandroid.device=emulator</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>rebuild</actionName>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            <goal>-e</goal>
+            <goal>-X</goal>
+        </goals>
+    </action>
         
-    </actions>
+</actions>

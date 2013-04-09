@@ -9,5 +9,7 @@
     <string name="ok">OK</string>
     <string name="send_button">Send message</string>
     <string name="cancel_button">Cancel</string>
-    <string name="server">http://192.168.1.3/index.php/</string>
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

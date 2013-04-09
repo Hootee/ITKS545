@@ -25,8 +25,9 @@ import android.util.Log;
  * @version 14.2.2013
  */
 public class OAuthGetRequest {
-	@SuppressWarnings("unused")
-	private static final String TAG = MyMapFragment.class.getSimpleName();
+
+    @SuppressWarnings("unused")
+    private static final String TAG = OAuthGetRequest.class.getSimpleName();
 
     protected enum ParameterKey {
 
@@ -79,19 +80,19 @@ public class OAuthGetRequest {
         parameters.put(ParameterKey.oauth_timestamp.toString(), timestamp());
         parameters.put(ParameterKey.oauth_signature.toString(), signature());
     }
-    
-    protected void putValue(ParameterKey param, String value){
+
+    protected void putValue(ParameterKey param, String value) {
         parameters.put(param.toString(), value);
     }
 
-    public String response_oauth_token(){
+    public String response_oauth_token() {
         return getResponseString("oauth_token");
     }
-    
-    protected String response_oauth_token_secret(){
+
+    protected String response_oauth_token_secret() {
         return getResponseString("oauth_token_secret");
     }
-    
+
     /**
      * URL-encode inputtext
      *
@@ -113,7 +114,7 @@ public class OAuthGetRequest {
         Mac mac = Mac.getInstance("HmacSHA1");
         // Some secret about secret: consumerSecret + "&"
         String oauth_token_secret = parameters.get("oauth_token_secret");
-        SecretKeySpec secretKey = new SecretKeySpec((consumerSecret + "&" + (oauth_token_secret==null?"":oauth_token_secret)).getBytes("UTF-8"), mac.getAlgorithm());
+        SecretKeySpec secretKey = new SecretKeySpec((consumerSecret + "&" + (oauth_token_secret == null ? "" : oauth_token_secret)).getBytes("UTF-8"), mac.getAlgorithm());
         mac.init(secretKey);
         byte[] digest = mac.doFinal(baseString().getBytes("UTF-8"));
         String signature = Base64.encodeToString(digest, Base64.DEFAULT);
@@ -171,9 +172,15 @@ public class OAuthGetRequest {
      *
      * @throws Exception
      */
-    private void buildRequestUrl() throws Exception {
+    private void buildRequestUrl(String[]... additionlParams) throws Exception {
         StringBuilder queryString = new StringBuilder(httpUrl);
         queryString.append("?");
+        if(additionlParams!=null){
+            for (int i = 0; i < additionlParams.length; i++) {
+                String[] additionlParam = additionlParams[i];
+                parameters.put(additionlParam[0], additionlParam[1]);
+            }
+        }
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             String key = entry.getKey();
             String value = entry.getValue();
@@ -188,14 +195,15 @@ public class OAuthGetRequest {
      *
      * @throws Exception
      */
-    public void sendRequest() throws Exception {
+    public String sendRequest(String[]... additionlParams) throws Exception {
         collectParameters();
-        buildRequestUrl();
+        buildRequestUrl(additionlParams);
         Log.d(TAG, "Request URL: " + httpGet.getRequestLine().getUri());
         responseString = httpClient.execute(httpGet, responseHandler);
+        Log.d(TAG, "responseString: " + responseString);
         buildResponseMap();
-        Log.d(TAG, "oauth_token: " + responseMap.get("oauth_token"));
-
+        Log.d(TAG, "oauth_token: " + responseMap.get("oauth_token") + ", oauth_token_secret: " + responseMap.get("oauth_token_secret"));
+        return httpGet.getRequestLine().getUri();
     }
 
     /**
@@ -224,5 +232,12 @@ public class OAuthGetRequest {
     public String getResponseString(String key) {
         return responseMap.get(key);
     }
-}
 
+    public String getConsumerKey() {
+        return consumerKey;
+    }
+
+    public String getConsumerSecret() {
+        return consumerSecret;
+    }
+}
